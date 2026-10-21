@@ -1,30 +1,45 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mws_praktik/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('login valid membawa pengguna ke halaman utama', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    final fields = find.byType(TextFormField);
+    await tester.ensureVisible(fields.at(0));
+    await tester.enterText(fields.at(0), 'Nama Pengguna');
+    await tester.enterText(fields.at(1), '081234567890');
+    await tester.enterText(fields.at(2), 'pengguna');
+    await tester.enterText(fields.at(3), 'rahasia123');
+    await tester.tap(find.byType(FilledButton));
+    await tester.pumpAndSettle();
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    expect(find.text('Halaman Utama'), findsOneWidget);
+    expect(find.text('SELAMAT DATANG!'), findsOneWidget);
+    expect(find.byKey(const ValueKey('imageCarousel')), findsOneWidget);
+    await tester.drag(
+      find.byKey(const ValueKey('innerContentList')),
+      const Offset(0, -600),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Konten 10'), findsOneWidget);
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('login tidak valid tetap di halaman login', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const MyApp());
+    final submitButton = find.byType(FilledButton);
+    await tester.ensureVisible(submitButton);
+    await tester.tap(submitButton);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Login'), findsWidgets);
+    expect(find.text('Bagian ini wajib diisi'), findsWidgets);
+    expect(find.text('Halaman Utama'), findsNothing);
   });
 }

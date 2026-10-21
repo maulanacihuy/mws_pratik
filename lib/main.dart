@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'utama.dart';
 
 void main() {
   runApp(const MyApp());
@@ -68,12 +69,9 @@ class _LoginPageState extends State<LoginPage> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Login gagal. Periksa kembali username dan password Anda.',
-          ),
-          backgroundColor: Color(0xFFB91C1C),
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute<void>(
+          builder: (context) => const HomePage(),
         ),
       );
     }
